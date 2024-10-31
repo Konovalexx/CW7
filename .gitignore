@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Django
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.coverage
+*.cover
+*.egg-info/
+*.eggs/
+*.env
+*.local
+*.sqlite3
+db.sqlite3
+
+# Static files
+/static/
+/media/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Logs
+*.log
+
+# Cache files
+.cache
+
+# Docker files
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Local development files
+*.local
+*.bak
+*.tmp
+*.swp
+
+# Ignore env files
+.env
+
+# Ignore Python virtual environment folders
+venv/
+ENV/
+env/
