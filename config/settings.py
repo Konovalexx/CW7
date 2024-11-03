@@ -1,11 +1,12 @@
 import os
+from datetime import timedelta
 from pathlib import Path
-from dotenv import load_dotenv
+from dotenv import load_dotenv  # Импортируем для работы с переменными окружения
 
 # Загрузка переменных окружения из .env файла
 load_dotenv()
 
-# Добавьте импорт для CORS
+# CORS настройки
 CORS_ALLOW_ALL_ORIGINS = False  # Убедитесь, что это значение соответствует вашим требованиям
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Укажите адрес вашего фронтенда
@@ -18,7 +19,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "your_secret_key_here")
 
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  # Укажите разрешенные хосты для вашего приложения
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -33,6 +34,7 @@ INSTALLED_APPS = [
     "corsheaders",  # Добавьте CORS заголовки
     "rest_framework",  # Добавьте Django REST Framework
     "drf_yasg",  # Добавьте drf_yasg для документации API
+    "rest_framework_simplejwt",  # JWT
 ]
 
 MIDDLEWARE = [
@@ -102,18 +104,29 @@ STATIC_URL = "/static/"
 
 AUTH_USER_MODEL = "users.User"  # Указываем модель пользователя
 
-# Настройки Django REST Framework
+# Настройки Django REST Framework с Simple JWT
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",  # Указываем класс пагинации по умолчанию
+    "PAGE_SIZE": 10,  # Размер страницы
+}
+
+# Simple JWT настройки
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 # Celery Configuration
 TG_API_KEY = os.environ.get("TG_API_KEY", "ваш_ключ_телеграмм")
 
+# Убедитесь, что вы используете правильный URL брокера
 CELERY_BROKER_URL = "redis://localhost:6379/0"  # Укажите URL вашего брокера
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"

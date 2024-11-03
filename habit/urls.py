@@ -1,15 +1,8 @@
-from django.urls import path, include  # Не забудьте добавить include
-from .views import (
-    UserRegistrationView,
-    WontListCreateView,
-    PublicWontListView,
-    WontDetailView,
-)
+from django.urls import path
+from .views import WontListCreateView, PublicWontListView, WontDetailView
 
 urlpatterns = [
-    path("register/", UserRegistrationView.as_view(), name="user-register"),
-    path("login/", include("rest_framework.urls")),  # Встроенные URL для аутентификации
-    path("my-habits/", WontListCreateView.as_view(), name="my-habits"),
-    path("public-habits/", PublicWontListView.as_view(), name="public-habits"),
-    path("habits/<int:pk>/", WontDetailView.as_view(), name="habit-detail"),
+    path('', WontListCreateView.as_view(), name='wont_list_create'),
+    path('public/', PublicWontListView.as_view(), name='public_wont_list'),
+    path('<int:pk>/', WontDetailView.as_view(), name='wont_detail'),
 ]

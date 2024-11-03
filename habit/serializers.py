@@ -1,18 +1,13 @@
 from rest_framework import serializers
-from .models import User, Wont
+from users.serializers import UserSerializer  # Импорт из приложения users
+from .models import Wont
 from .validators import (
     validate_wont_and_reward,
     validate_linked_wont,
     validate_pleasant_wont,
+    validate_period,
+    validate_time,
 )
-
-
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "username", "chat_id"]
-        ref_name = "HabitUserSerializer"
-
 
 class WontSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
@@ -34,13 +29,7 @@ class WontSerializer(serializers.ModelSerializer):
         read_only_fields = ["user"]
 
     def validate_period(self, value):
-        # Проверяем, что значение period соответствует одному из вариантов
-        valid_periods = dict(self.Meta.model.CHOICES_PERIOD).keys()
-        if value not in valid_periods:
-            raise serializers.ValidationError(
-                "Период выполнения должен быть одним из следующих: "
-                + ", ".join(valid_periods)
-            )
+        validate_period(value)  # Используем валидатор
         return value  # Возвращаем проверенное значение
 
     def validate_time_to_action(self, value):
@@ -49,13 +38,7 @@ class WontSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Время на выполнение должно быть числом (в секундах)."
             )
-
-        # Валидация времени выполнения привычки
-        if value > 120:
-            raise serializers.ValidationError(
-                "Время выполнения привычки не должно превышать 120 секунд."
-            )
-
+        validate_time(value)  # Используем валидатор
         return value  # Возвращаем проверенное значение
 
     def validate(self, attrs):
