@@ -68,6 +68,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+# Подключение к базе данных с использованием переменных окружения
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -127,7 +128,7 @@ SIMPLE_JWT = {
 TG_API_KEY = os.environ.get("TG_API_KEY", "ваш_ключ_телеграмм")
 
 # Убедитесь, что вы используете правильный URL брокера
-CELERY_BROKER_URL = "redis://localhost:6379/0"  # Укажите URL вашего брокера
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "redis://localhost:6379/0")  # URL вашего брокера из .env
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"  # Установите свой часовой пояс
