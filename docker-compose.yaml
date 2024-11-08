@@ -3,43 +3,58 @@ version: '3.8'
 services:
   web:
     build: .
+    # Команда для запуска миграций и Django-сервера
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
+      # Пробрасываем порт 8000 на хост
       - "8000:8000"
     volumes:
+      # Монтируем текущую директорию хоста внутрь контейнера для разработки
       - .:/app
     depends_on:
+      # Указываем зависимости: веб-приложение будет ждать запуска БД и Redis
       - db
       - redis
 
   db:
     image: postgres:latest
+    # Задаём параметры БД через переменные окружения
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
+      # Монтируем том для хранения данных Postgres
       - postgres_data:/var/lib/postgresql/data
 
   redis:
     image: redis:latest
+    # Redis для Celery и кеширования
 
   celery:
     build: .
+    # Команда для запуска Celery worker
     command: celery -A config worker --loglevel=info
     depends_on:
+      # Celery зависит от Redis и БД
       - redis
       - db
     volumes:
+      # Монтируем проект внутрь контейнера
       - .:/app
 
   celery_beat:
     build: .
+    # Команда для запуска Celery Beat
     command: celery -A config beat --loglevel=info
     depends_on:
+      # Celery Beat также зависит от Redis и БД
       - redis
       - db
     volumes:
+      # Монтируем проект внутрь контейнера
       - .:/app
 
+# Определяем том для хранения данных Postgres
 volumes:
   postgres_data:
